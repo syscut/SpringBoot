@@ -4,8 +4,8 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
-
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
@@ -15,52 +15,57 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.example.model.Basm060;
 import com.example.model.Basm060Class;
+import com.example.repository.Basm060Repository;
 
 @Service
 @Transactional
 public class Basm060Service {
 	DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
-	
+	DateTimeFormatter stringFormatter = DateTimeFormatter.ofPattern("EEEMMMddHH:mm:sszzzyyyy", Locale.US);
 	@Autowired
 	private EntityManager em;
 	
+	@Autowired
+	Basm060Repository repository;
+	
 //	@Autowired 
 //	JdbcTemplate jdbcTemplate;
-	
-	public Map<String, Object> update(Basm060Class basm060Class) {
+	public Map<String, Object> update(Basm060 basm060) {
 		Map<String, Object> result = new HashMap<String,Object>();
-		String param_left = "(";
-		String param_right = "(";
-		String[] params = basm060Class.toString().replaceAll("Basm060Class\\((.*)\\)", "$1").replaceAll(" ", "").split(",");
-		
-		for (String val : params) {
-			String[] col = val.split("=");
-			if(col.length==2 && !col[1].matches("null") && !col[0].matches("cust_no")) {
-				param_left += col[0]+",";
-				param_right += "\""+col[1]+"\",";
-			}else if(col.length==1&& !col[0].matches("cust_no")&&!col[0].matches("update_date")) {
-				param_left += col[0]+",";
-				param_right += "\"\",";
-			}
-		}
-		
-		param_left+="update_date)";
-		param_right+="\""+LocalDate.now().format(formatter)+"\")";
-System.out.print("update basm060 set "+ param_left +" = "+ param_right +" where cust_no = "+basm060Class.getCust_no());
-//		int update_num =  em.createNativeQuery("update basm060 set "+ param_left +" = "+ param_right +" where cust_no = "+basm060Class.getCust_no())
-//		.executeUpdate();
-		
+		basm060.setUpdate_date(LocalDate.now().format(formatter));
+		repository.save(basm060);
 		result.put("status", true);
-		result.put("message", "筆資料更新成功");
+		result.put("message", "資料更新成功");
 		return result;
 	}
 	
+	public Map<String, Object> create(Basm060 basm060) {
+		Map<String, Object> result = new HashMap<String,Object>();
+		basm060.setUpdate_date(LocalDate.now().format(formatter));
+		basm060.setCreate_date(LocalDate.now().format(formatter));
+		Integer id = repository.findMax();
+		basm060.setCust_no(id+1);
+		repository.save(basm060);
+		result.put("status", true);
+		result.put("message", "資料新增成功");
+		return result;
+	}
+	
+	public Map<String, Object> delete(Basm060 basm060){
+		Map<String, Object> result = new HashMap<String,Object>();
+		repository.deleteById(basm060.getCust_no());
+		result.put("status", true);
+		result.put("message", "資料刪除成功");
+		return result;
+	}
+	
+
 	@SuppressWarnings("unchecked")
-	public List<Basm060> search(Basm060Class basm060Class){
+	public List<Basm060Class> search(Basm060Class basm060Class){
 		String param = "";
 		Integer cust_no = null;
 		Integer main_custno = null;
-		System.out.println(basm060Class.toString().replaceAll("Basm060Class\\((.*)\\)", "$1").replaceAll(" ", ""));
+		//System.out.println(basm060Class.toString().replaceAll("Basm060Class\\((.*)\\)", "$1").replaceAll(" ", ""));
 		for (String val : basm060Class.toString().replaceAll("Basm060Class\\((.*)\\)", "$1").replaceAll(" ", "").split(",")) {
 			String[] col = val.split("=");
 			if(col.length==2 && !col[1].matches("null")) {
@@ -91,8 +96,10 @@ System.out.print("update basm060 set "+ param_left +" = "+ param_right +" where 
 					}
 				}else if(col[0].matches("zip_code||zip_area")) {
 					param += " and b."+ col[0] +" = '"+col[1]+"'";
-				}else if(col[0].matches("create_id||create_date||update_id||update_date")) {
+				}else if(col[0].matches("create_id||update_id")) {
 					param += " and a."+ col[0] +" = '"+col[1]+"'";
+				}else if(col[0].matches("create_date||update_date")){
+					param += " and a."+ col[0] +" = '"+LocalDate.parse(col[1],stringFormatter).format(formatter)+"'";
 				} else {
 					param += " and "+ col[0] +" = '"+col[1]+"'";
 				}
@@ -103,7 +110,7 @@ System.out.print("update basm060 set "+ param_left +" = "+ param_right +" where 
 		Query query = em.createNativeQuery("select a.*, b.zip_area "
                 						  +"from basm060 a,gfcdb@tauyan\\:basm020 b "
                 						  +"where a.zip_code = b.zip_code "
-                						  +param,Basm060.class);
+                						  +param,Basm060Class.class);
 		
 		if(cust_no!=null) {
 			//System.out.println("cust_no:"+cust_no);
@@ -114,7 +121,7 @@ System.out.print("update basm060 set "+ param_left +" = "+ param_right +" where 
 			query.setParameter("main_custno", main_custno);
 		}
 		
-		List<Basm060> content;
+		List<Basm060Class> content;
 			content = query.setMaxResults(300).getResultList();
 		
 //try {

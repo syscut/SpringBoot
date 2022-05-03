@@ -3,6 +3,8 @@ package com.example.model;
 import java.util.Date;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 import lombok.AllArgsConstructor;
@@ -26,8 +28,6 @@ public class Basm060 {
 	private String inv_addr;
 	
 	private String zip_code;
-	
-	private String zip_area;
 	
 	private String resp_man;
 	
@@ -53,9 +53,9 @@ public class Basm060 {
 	
 	private String create_id;
 	
-	private Date create_date;
+	private String create_date;
 	
 	private String update_id;
 	
-	private Date update_date;
+	private String update_date;
 }

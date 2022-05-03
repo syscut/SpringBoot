@@ -27,8 +27,8 @@ public class Controllor {
 	
 	
 	@PostMapping(path = "/search")
-	public  List<Basm060> s(@RequestBody Basm060Class basm060Class){
-		List<Basm060> result = basm060Service.search(basm060Class);
+	public  List<Basm060Class> r(@RequestBody Basm060Class basm060Class){
+		List<Basm060Class> result = basm060Service.search(basm060Class);
 		return result;
 	}
 	
@@ -39,8 +39,20 @@ public class Controllor {
 	}
 	
 	@PostMapping(path = "/update")
-	public Map<String, Object> u(@RequestBody Basm060Class basm060Class){
-		Map<String, Object> result = basm060Service.update(basm060Class);
+	public Map<String, Object> u(@RequestBody Basm060 basm060){
+		Map<String, Object> result = basm060Service.update(basm060);
+		return result;
+	}
+	
+	@PostMapping(path = "/create")
+	public Map<String, Object> c(@RequestBody Basm060 basm060){
+		Map<String, Object> result = basm060Service.create(basm060);
+		return result;
+	}
+	
+	@PostMapping(path = "/delete")
+	public Map<String, Object> d(@RequestBody Basm060 basm060){
+		Map<String, Object> result = basm060Service.delete(basm060);
 		return result;
 	}
 }

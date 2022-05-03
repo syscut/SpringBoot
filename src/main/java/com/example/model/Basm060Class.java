@@ -53,9 +53,9 @@ public class Basm060Class {
 		
 		private String create_id;
 		
-		private String create_date;
+		private Date create_date;
 		
 		private String update_id;
 		
-		private String update_date;
+		private Date update_date;
 	}
