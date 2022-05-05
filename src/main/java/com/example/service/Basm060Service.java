@@ -1,5 +1,15 @@
 package com.example.service;
 
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.SQLOutput;
+import java.io.UnsupportedEncodingException;
+import java.nio.ByteBuffer;
+import java.nio.CharBuffer;
+import java.nio.charset.CharacterCodingException;
+import java.nio.charset.Charset;
+import java.nio.charset.CharsetDecoder;
+import java.nio.charset.CharsetEncoder;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
@@ -10,18 +20,22 @@ import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.model.Basm060;
 import com.example.model.Basm060Class;
 import com.example.repository.Basm060Repository;
+import com.gfc.nio.charset.Big5_GFC;
+import com.informix.jdbc.IfxConnection;
 
 @Service
 @Transactional
 public class Basm060Service {
 	DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
 	DateTimeFormatter stringFormatter = DateTimeFormatter.ofPattern("EEEMMMddHH:mm:sszzzyyyy", Locale.US);
+	
 	@Autowired
 	private EntityManager em;
 	
@@ -29,13 +43,13 @@ public class Basm060Service {
 	Basm060Repository repository;
 	
 //	@Autowired 
-//	JdbcTemplate jdbcTemplate;
+	JdbcTemplate jdbcTemplate;
 	public Map<String, Object> update(Basm060 basm060) {
 		Map<String, Object> result = new HashMap<String,Object>();
 		basm060.setUpdate_date(LocalDate.now().format(formatter));
 		repository.save(basm060);
 		result.put("status", true);
-		result.put("message", "資料更新成功");
+		result.put("message", "");
 		return result;
 	}
 	
@@ -47,7 +61,7 @@ public class Basm060Service {
 		basm060.setCust_no(id+1);
 		repository.save(basm060);
 		result.put("status", true);
-		result.put("message", "資料新增成功");
+		result.put("message", "");
 		return result;
 	}
 	
@@ -55,13 +69,13 @@ public class Basm060Service {
 		Map<String, Object> result = new HashMap<String,Object>();
 		repository.deleteById(basm060.getCust_no());
 		result.put("status", true);
-		result.put("message", "資料刪除成功");
+		result.put("message", "");
 		return result;
 	}
 	
 
 	@SuppressWarnings("unchecked")
-	public List<Basm060Class> search(Basm060Class basm060Class){
+	public String search(Basm060Class basm060Class){
 		String param = "";
 		Integer cust_no = null;
 		Integer main_custno = null;
@@ -134,13 +148,17 @@ public class Basm060Service {
 //	e.printStackTrace();
 //}
 			
-//			Big5_GFC big5_GFC = new Big5_GFC();
-//			big5_GFC.newDecoder();
-//			big5_GFC.newEncoder();
-//			ByteBuffer buffer = ByteBuffer.wrap(content.get(0).getCust_name().getBytes());
-//System.out.println(big5_GFC.decode(buffer));
-////content.get(0).setCust_name(big5_GFC.decode(buffer).toString());
-//		System.out.println(content.get(0).getCust_name());
-		return content;
+			Charset big5_GFC = Big5_GFC.forName("X-Big5-GFC");
+			Charset utf8 = Big5_GFC.forName("UTF-8");
+			CharBuffer cb  = CharBuffer.wrap(content.get(0).getCust_name());
+			ByteBuffer encodedData = big5_GFC.encode(cb);
+			CharBuffer decodedData = big5_GFC.decode(encodedData);
+			
+			System.out.println(decodedData);
+
+			
+			String a = "[{\"cust_name\":\""+decodedData+"\"}]";
+			return a;
+		//return content;
 	}
 }
