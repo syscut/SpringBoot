@@ -27,8 +27,8 @@ public class Controllor {
 	
 	
 	@PostMapping(path = "/search")
-	public  String r(@RequestBody Basm060Class basm060Class){
-		String result = basm060Service.search(basm060Class);
+	public  List<Basm060Class> r(@RequestBody Basm060Class basm060Class) throws Exception{
+		List<Basm060Class> result = basm060Service.search(basm060Class);
 		return result;
 	}
 	
