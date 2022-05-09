@@ -21,7 +21,7 @@ public class Basm020Service {
 		String param = "";
 		
 		
-		if(!zip_code.isBlank()) {
+		if(!zip_code.isEmpty()) {
 			if(zip_code.matches("^[<>=]\\d+")) {
 				param += " and zip_code "+zip_code.substring(0,1)+" :zip_code";
 				zip_code = zip_code.substring(1);
@@ -32,17 +32,17 @@ public class Basm020Service {
 				param += " and zip_code = :zip_code";
 			}
 		}
-		if(!zip_area.isBlank()) {
+		if(!zip_area.isEmpty()) {
 			param += " and zip_area like :zip_area";
 		}
 		Query q = em.createNativeQuery("select * "
 	          	  +"from basm020 "
 	          	  +"where 1 = 1"
 	          	  +param,Basm020.class);
-		if(!zip_code.isBlank()) {
+		if(!zip_code.isEmpty()) {
 			q.setParameter("zip_code", zip_code);
 		}
-		if(!zip_area.isBlank()) {
+		if(!zip_area.isEmpty()) {
 			q.setParameter("zip_area", "%"+zip_area+"%");
 		}
 		List<Basm020> content = q.setMaxResults(300).getResultList();

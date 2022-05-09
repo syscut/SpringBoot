@@ -14,6 +14,7 @@ import java.util.Locale;
 import java.util.Map;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
+import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -141,9 +142,14 @@ public class Basm060Service {
 //} catch (SQLException e) {
 //	e.printStackTrace();
 //}
+			Map<String, Charset> map = Charset.availableCharsets();
+		      for (String name : map.keySet()) {
+		         System.out.println(name);
+		      }
 			System.out.println(decode(content.get(0).getCust_name()));
 		return content;
 	}
+	//測試自訂編碼
 	public String decode(String s) throws Exception {
 		char[][] b2c = new char[0][];
 		b2c = new char[256][];
@@ -156,7 +162,6 @@ public class Basm060Service {
 
 		ByteBuffer buffer = ByteBuffer.wrap(s.getBytes("MS950"));
 		String result = "";
-		Charset charset = Charset.forName("MS950");
 		
 		while(buffer.remaining()>=2) {
 		int pos = buffer.position();
