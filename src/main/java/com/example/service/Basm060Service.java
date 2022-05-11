@@ -11,7 +11,6 @@ import java.util.Map;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
-import org.aspectj.weaver.ast.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
@@ -139,17 +138,8 @@ public class Basm060Service {
 //} catch (SQLException e) {
 //	e.printStackTrace();
 //}
-			MS950_GFC m = new MS950_GFC();
-		System.out.println(m.decode(content.get(0).getCust_name()));
-		
-		decode(content);
 			
 		return content;
 	}
 	
-	public <T> List<T> decode(List<T> s) {
-		List<T> l = new ArrayList<>();
-		
-		return l;
-	}
 }

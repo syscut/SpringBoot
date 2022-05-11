@@ -2,8 +2,11 @@ package com.example.model;
 
 import java.util.Date;
 
+import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+
+import com.example.converter.StringConverter;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -17,6 +20,7 @@ public class Basm060Class {
 		@Id
 		private String cust_no;
 		
+		@Convert(converter = StringConverter.class)
 		private String cust_name;
 		
 		private String cust_tel;
