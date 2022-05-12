@@ -19,7 +19,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.example.model.Basm060;
 import com.example.model.Basm060Class;
 import com.example.repository.Basm060Repository;
-import com.gfc.MS950_GFC;
 
 @Service
 @Transactional

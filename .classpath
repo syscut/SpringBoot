@@ -46,5 +46,6 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="D:/!!!Js/MS950-GFC.jar"/>
+	<classpathentry kind="lib" path="D:/!!!Js/MS950-Converter.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

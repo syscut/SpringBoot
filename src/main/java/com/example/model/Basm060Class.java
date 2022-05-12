@@ -26,7 +26,8 @@ public class Basm060Class {
 		private String cust_tel;
 		
 		private String cust_fax;
-
+		
+		@Convert(converter = StringConverter.class)
 		private String inv_addr;
 		
 		private String zip_code;
@@ -55,10 +56,12 @@ public class Basm060Class {
 		
 		private String old_custno;
 		
+		@Convert(converter = StringConverter.class)
 		private String create_id;
 		
 		private Date create_date;
 		
+		@Convert(converter = StringConverter.class)
 		private String update_id;
 		
 		private Date update_date;
