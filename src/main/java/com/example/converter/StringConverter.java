@@ -3,7 +3,7 @@ package com.example.converter;
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
 
-import com.gfc.MS950StringConverter;
+import com.gfc.nio.charset.MS950StringConverter;
 
 @Converter
 public class StringConverter implements AttributeConverter<String, String>{

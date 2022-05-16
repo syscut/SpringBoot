@@ -2,7 +2,6 @@ package com.example.service;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -65,7 +64,7 @@ public class Basm060Service {
 	
 
 	@SuppressWarnings("unchecked")
-	public List<Basm060Class> search(Basm060Class basm060Class) throws Exception{
+	public List<Basm060Class> search(Basm060Class basm060Class){
 		String param = "";
 		Integer cust_no = null;
 		Integer main_custno = null;
