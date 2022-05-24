@@ -11,7 +11,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.model.Basm020;
 import com.example.model.Basm060;
 import com.example.model.Basm060Class;
+import com.example.model.Mafm080;
 import com.example.service.Basm060Service;
+import com.example.service.Mafm080Service;
 import com.example.service.Basm020Service;
 
 @CrossOrigin("*")
@@ -19,10 +21,12 @@ import com.example.service.Basm020Service;
 public class Controllor {
 	private Basm020Service basm020Service;
 	private Basm060Service basm060Service;
-	public Controllor(Basm060Service basm060Service,Basm020Service basm020Service) {
+	private Mafm080Service mafm080Service;
+	public Controllor(Basm060Service basm060Service,Basm020Service basm020Service,Mafm080Service mafm080Service) {
 		super();
 		this.basm060Service = basm060Service;
 		this.basm020Service = basm020Service;
+		this.mafm080Service = mafm080Service;
 	}
 	
 	
@@ -36,6 +40,11 @@ public class Controllor {
 	public  List<Basm020> basn021(@RequestBody Basm020 basm020){
 		List<Basm020> result = basm020Service.search(basm020.getZip_code(),basm020.getZip_area());
 		return result;
+	}
+	
+	@PostMapping(path = "/mafm080")
+	public  Iterable<Mafm080> mafm080(){
+		return mafm080Service.findAll();
 	}
 	
 	@PostMapping(path = "/update")

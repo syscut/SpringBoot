@@ -11,7 +11,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,8 +30,6 @@ public class Basm060Service {
 	@Autowired
 	Basm060Repository repository;
 	
-//	@Autowired 
-	JdbcTemplate jdbcTemplate;
 	public Map<String, Object> update(Basm060 basm060) {
 		Map<String, Object> result = new HashMap<String,Object>();
 		basm060.setUpdate_date(LocalDate.now().format(formatter));
