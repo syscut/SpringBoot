@@ -20,7 +20,8 @@ import lombok.NoArgsConstructor;
 				columns = {
 						@ColumnResult(name = "prg_no"),
 						@ColumnResult(name = "prg_name"),
-						@ColumnResult(name = "remark")
+						@ColumnResult(name = "remark"),
+						@ColumnResult(name = "exec_file")
 				}
 				)})
 public class Prgm010 {
@@ -31,5 +32,7 @@ public class Prgm010 {
 	private String prg_name;
 	
 	private String remark;
+	
+	private String exec_file;
 	
 }

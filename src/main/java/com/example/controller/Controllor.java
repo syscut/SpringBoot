@@ -16,6 +16,7 @@ import com.example.model.Basm020;
 import com.example.model.Basm060;
 import com.example.model.Basm060Class;
 import com.example.model.Mafm080;
+import com.example.model.Prgm010;
 import com.example.model.Psnm110;
 import com.example.service.Basm060Service;
 import com.example.service.LoginService;
@@ -37,11 +38,16 @@ public class Controllor {
 	@Autowired
 	private LoginService loginService;
 	
-	DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+	DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
 	
 	@PostMapping(path = "/menu")
 	public  Map<String, Object> menu(@RequestBody Map<String, String> usrInf){
 		return systemPrgService.getMenu(usrInf);
+	}
+	
+	@PostMapping(path = "/menuPrg")
+	public List<Prgm010> menuPrg(@RequestBody Map<String, String> usrInf){
+		return systemPrgService.getPrg(usrInf);
 	}
 	
 	@PostMapping(path = "/getDate")

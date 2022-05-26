@@ -32,10 +32,36 @@ public class SystemPrgService {
 											.setParameter("usr_group", usrInf.get("usrGroup")).getResultList();
 		result.put("menuItem", prgm040);
 		
-		List<Prgm010> prgm010 = em.createNativeQuery("select prg_no, prg_name, remark from prgm010 where menu_prg = 'Y'","Prgm010").getResultList();
+		List<Prgm010> prgm010 = em.createNativeQuery("select distinct a.prg_no, a.prg_name, a.remark, a.exec_file "
+											+ "from prgm010 a,prgm020 b "
+											+ "where a.menu_prg = 'Y' and "
+											+ "a.prg_no = b.prg_no and "
+											+ "((b.usr_group = :usr_group and b.emp_no = 0) or "
+											+ "b.emp_no = :emp_no) "
+											+ "order by 1","Prgm010").setParameter("emp_no", usrInf.get("empNo"))
+											.setParameter("usr_group", usrInf.get("usrGroup")).getResultList();
 		result.put("programs", prgm010);
+		System.out.println("emp_no="+usrInf.get("empNo"));
+		System.out.println("usr_group="+usrInf.get("usrGroup"));
 		
 		return result;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<Prgm010> getPrg(Map<String, String> usrInf){
+		
+		List<Prgm010> prgm010 = em.createNativeQuery("select distinct a.prg_no, a.prg_name, a.remark ,a.exec_file "
+											+ "from prgm010 a,prgm020 b "
+											+ "where b.prg_no[1,3] = :sys_no and "
+											+ "a.menu_prg = 'Y' and "
+											+ "a.prg_no = b.prg_no and "
+											+ "((b.usr_group = :usr_group and b.emp_no = 0) or "
+											+ "b.emp_no = :emp_no) "
+											+ "order by 1","Prgm010").setParameter("emp_no", usrInf.get("empNo"))
+											.setParameter("usr_group", usrInf.get("usrGroup"))
+											.setParameter("sys_no", usrInf.get("sysNo")).getResultList();
+		
+		return prgm010;
 	}
 
 }
