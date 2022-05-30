@@ -8,6 +8,8 @@ import javax.persistence.EntityManager;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.model.Prgm010;
@@ -15,7 +17,7 @@ import com.example.model.Prgm040;
 
 
 @Service
-@Transactional
+@Transactional(isolation = Isolation.READ_COMMITTED,propagation = Propagation.REQUIRED)
 public class SystemPrgService {
 	
 	@Autowired

@@ -1,6 +1,7 @@
 package com.example.controller;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -8,6 +9,7 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -15,10 +17,12 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.model.Basm020;
 import com.example.model.Basm060;
 import com.example.model.Basm060Class;
+import com.example.model.Invm010;
 import com.example.model.Mafm080;
 import com.example.model.Prgm010;
 import com.example.model.Psnm110;
 import com.example.service.Basm060Service;
+import com.example.service.Invm010Service;
 import com.example.service.LoginService;
 import com.example.service.Mafm080Service;
 import com.example.service.SystemPrgService;
@@ -34,11 +38,18 @@ public class Controllor {
 	@Autowired
 	private Mafm080Service mafm080Service;
 	@Autowired
+	private Invm010Service invm010Service;
+	@Autowired
 	private SystemPrgService systemPrgService;
 	@Autowired
 	private LoginService loginService;
 	
 	DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
+	
+	@GetMapping("/")
+	public String index(){
+		return "Hello World " + LocalDateTime.now();  
+	}
 	
 	@PostMapping(path = "/menu")
 	public  Map<String, Object> menu(@RequestBody Map<String, String> usrInf){
@@ -76,6 +87,11 @@ public class Controllor {
 	@PostMapping(path = "/search")
 	public  List<Basm060Class> r(@RequestBody Basm060Class basm060Class) throws Exception{
 		return basm060Service.search(basm060Class);
+	}
+	
+	@PostMapping(path = "/invm010")
+	public List<Invm010> invm010(@RequestBody Invm010 invm010){
+		return invm010Service.result(invm010);
 	}
 	
 	@PostMapping(path = "/basn021")
