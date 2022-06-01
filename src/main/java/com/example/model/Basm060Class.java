@@ -52,6 +52,7 @@ public class Basm060Class {
 		
 		private String main_custno;
 		
+		@Convert(converter = StringConverter.class)
 		private String remk;
 		
 		private String old_custno;
