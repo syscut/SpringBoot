@@ -15,6 +15,7 @@
 	<description>客戶資料檔維護(basd060)</description>
 	<properties>
 		<java.version>11</java.version>
+		<custom.lib-path>C:/Users/mis/.m2/repository/com/gfc/MS950-GFC/0.0.1-SNAPSHOT</custom.lib-path>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -44,6 +45,8 @@
 			<groupId>com.gfc</groupId>
 			<artifactId>MS950-GFC</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
+			<scope>system</scope>
+			<systemPath>${custom.lib-path}/MS950-GFC-0.0.1-SNAPSHOT.jar</systemPath>
 		</dependency>
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
@@ -62,6 +65,9 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<configuration>
+					<includeSystemScope>
+						true
+					</includeSystemScope>
 					<excludes>
 						<exclude>
 							<groupId>org.projectlombok</groupId>
