@@ -2,6 +2,7 @@ package com.example.service;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -65,7 +66,8 @@ public class Basm060Service {
 		String param = "";
 		Integer cust_no = null;
 		Integer main_custno = null;
-		//System.out.println(basm060Class.toString().replaceAll("Basm060Class\\((.*)\\)", "$1").replaceAll(" ", ""));
+//		whereStringBuilder(basm060Class, null);
+//		System.out.println(basm060Class.toString());
 		for (String val : basm060Class.toString().replaceAll("Basm060Class\\((.*)\\)", "$1").replaceAll(" ", "").split(",")) {
 			String[] col = val.split("=");
 			if(col.length==2 && !col[1].matches("null")) {
@@ -121,6 +123,7 @@ public class Basm060Service {
 			query.setParameter("main_custno", main_custno);
 		}
 		
+		
 		List<Basm060Class> content;
 			content = query.setMaxResults(300).getResultList();
 		
@@ -135,6 +138,41 @@ public class Basm060Service {
 //}
 			
 		return content;
+	}
+	
+	public String whereStringBuilder(Object par) {
+		String s = par.toString();
+		String[] includes = {"cust_no","cust_name","cust_tel"};
+		List<String> include = Arrays.asList(includes);
+		StringBuilder sb = new StringBuilder();
+		//		System.out.println();
+		for(String param : s.replaceFirst(".*?\\((.*)\\)", "$1").split(", ")) {
+			String key = param.split("=",2)[0];
+			String value= param.split("=",2)[1];
+//			System.out.println("key "+key+" value "+value);
+			if(include.contains(key)) {
+				if(value.matches("^(<|>)(?!=).*")) {
+					sb.append(" and "+ key +" "+ value.substring(0,1) +" '"+ value.substring(1) +"'");
+				}else if(value.matches("^(<=|>=).*")) {
+					sb.append(" and "+ key +" "+ value.substring(0,2) +" '"+ value.substring(2)+ "'");
+				}else if(value.startsWith("=")) {
+					sb.append(" and ( "+ key +" = null or "+ key +" = ' ')");
+				}else if(value.startsWith("!=")) {
+					sb.append(" and ( "+ key +" != null or "+ key +" != ' ')");
+				}else if(value.matches(".*?:.*")) {
+					sb.append(" and "+ key +" between '"+value.split(":")[0]+"' and '"+value.split(":")[1]+"'");
+				}else if(value.matches("^\\*.*[^\\*]$")) {
+					sb.append(" and "+ key +" like '%"+value.substring(1)+"'");
+				}else if(value.matches("^[^\\*].*\\*$")) {
+					sb.append(" and "+ key +" like '"+value.substring(0,value.length()-1)+"%'");
+				}else if(value.matches("^\\*.*\\*$")) {
+					sb.append(" and "+ key +" like '%"+value.substring(1,value.length()-1)+"%'");
+				}
+				
+			}
+			//System.out.println(key);
+		}
+		return "";
 	}
 	
 }
