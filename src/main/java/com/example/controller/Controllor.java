@@ -46,11 +46,6 @@ public class Controllor {
 	
 	DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
 	
-	@GetMapping("/")
-	public String index(){
-		return "Hello World " + LocalDateTime.now();  
-	}
-	
 	@PostMapping(path = "/menu")
 	public  Map<String, Object> menu(@RequestBody Map<String, String> usrInf){
 		return systemPrgService.getMenu(usrInf);
