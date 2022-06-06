@@ -4,6 +4,8 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -63,65 +65,66 @@ public class Basm060Service {
 
 	@SuppressWarnings("unchecked")
 	public List<Basm060Class> search(Basm060Class basm060Class){
-		String param = "";
-		Integer cust_no = null;
-		Integer main_custno = null;
+//		String param = "";
+//		Integer cust_no = null;
+//		Integer main_custno = null;
 //		whereStringBuilder(basm060Class, null);
 //		System.out.println(basm060Class.toString());
-		for (String val : basm060Class.toString().replaceAll("Basm060Class\\((.*)\\)", "$1").replaceAll(" ", "").split(",")) {
-			String[] col = val.split("=");
-			if(col.length==2 && !col[1].matches("null")) {
-				//System.out.println("col[0]:"+col[0]+"col[1]:"+col[1]);
-				if(col[0].matches("cust_no")) {
-					
-					if(col[1].matches("^[<>=]\\d+")) {
-						param += " and cust_no "+col[1].substring(0,1)+" :cust_no";
-						cust_no = Integer.valueOf(col[1].substring(1));
-					}else if(col[1].matches("^(<=|>=)\\d+")){
-						param += " and cust_no "+col[1].substring(0,2)+" :cust_no";
-						cust_no = Integer.valueOf(col[1].substring(2));
-					}else{
-						param += " and cust_no = :cust_no";
-						cust_no = Integer.valueOf(col[1]);
-					}
-				}else if(col[0].matches("main_custno")) {
-					
-					if(col[1].matches("^[<>=]\\d+")) {
-						param += " and main_custno "+col[1].substring(0,1)+" :main_custno";
-						main_custno = Integer.valueOf(col[1].substring(1));
-					}else if(col[1].matches("^(<=|>=)\\d+")){
-						param += " and main_custno "+col[1].substring(0,2)+" :main_custno";
-						main_custno = Integer.valueOf(col[1].substring(2));
-					}else{
-						param += " and main_custno = :main_custno";
-						main_custno = Integer.valueOf(col[1]);
-					}
-				}else if(col[0].matches("zip_code||zip_area")) {
-					param += " and b."+ col[0] +" = '"+col[1]+"'";
-				}else if(col[0].matches("create_id||update_id")) {
-					param += " and a."+ col[0] +" = '"+col[1]+"'";
-				}else if(col[0].matches("create_date||update_date")){
-					param += " and a."+ col[0] +" = '"+LocalDate.parse(col[1],stringFormatter).format(formatter)+"'";
-				} else {
-					param += " and "+ col[0] +" = '"+col[1]+"'";
-				}
-			}
-		}
+//		for (String val : basm060Class.toString().replaceAll("Basm060Class\\((.*)\\)", "$1").replaceAll(" ", "").split(",")) {
+//			String[] col = val.split("=");
+//			if(col.length==2 && !col[1].matches("null")) {
+//				//System.out.println("col[0]:"+col[0]+"col[1]:"+col[1]);
+//				if(col[0].matches("cust_no")) {
+//					
+//					if(col[1].matches("^[<>=]\\d+")) {
+//						param += " and cust_no "+col[1].substring(0,1)+" :cust_no";
+//						cust_no = Integer.valueOf(col[1].substring(1));
+//					}else if(col[1].matches("^(<=|>=)\\d+")){
+//						param += " and cust_no "+col[1].substring(0,2)+" :cust_no";
+//						cust_no = Integer.valueOf(col[1].substring(2));
+//					}else{
+//						param += " and cust_no = :cust_no";
+//						cust_no = Integer.valueOf(col[1]);
+//					}
+//				}else if(col[0].matches("main_custno")) {
+//					
+//					if(col[1].matches("^[<>=]\\d+")) {
+//						param += " and main_custno "+col[1].substring(0,1)+" :main_custno";
+//						main_custno = Integer.valueOf(col[1].substring(1));
+//					}else if(col[1].matches("^(<=|>=)\\d+")){
+//						param += " and main_custno "+col[1].substring(0,2)+" :main_custno";
+//						main_custno = Integer.valueOf(col[1].substring(2));
+//					}else{
+//						param += " and main_custno = :main_custno";
+//						main_custno = Integer.valueOf(col[1]);
+//					}
+//				}else if(col[0].matches("zip_code||zip_area")) {
+//					param += " and b."+ col[0] +" = '"+col[1]+"'";
+//				}else if(col[0].matches("create_id||update_id")) {
+//					param += " and a."+ col[0] +" = '"+col[1]+"'";
+//				}else if(col[0].matches("create_date||update_date")){
+//					param += " and a."+ col[0] +" = '"+LocalDate.parse(col[1],stringFormatter).format(formatter)+"'";
+//				} else {
+//					param += " and "+ col[0] +" = '"+col[1]+"'";
+//				}
+//			}
+//		}
 		//System.out.println(param);
-		
+		LinkedList<String> include = new LinkedList<String>();
+		include.add("cust_no");
 		Query query = em.createNativeQuery("select a.*, b.zip_area "
-                						  +"from basm060 a,gfcdb@tauyan\\:basm020 b "
-                						  +"where a.zip_code = b.zip_code "
-                						  +param,Basm060Class.class);
+                						  +"from basm060 a,basm020 b "
+                						  +"where (a.zip_code = b.zip_code or a.zip_code = '')"
+                						  +whereStringBuilder(basm060Class,include ),Basm060Class.class);
 		
-		if(cust_no!=null) {
-			//System.out.println("cust_no:"+cust_no);
-			query.setParameter("cust_no", cust_no);
-		}
-		if(main_custno!=null) {
-			//System.out.println("main_custno:"+main_custno);
-			query.setParameter("main_custno", main_custno);
-		}
+//		if(cust_no!=null) {
+//			//System.out.println("cust_no:"+cust_no);
+//			query.setParameter("cust_no", cust_no);
+//		}
+//		if(main_custno!=null) {
+//			//System.out.println("main_custno:"+main_custno);
+//			query.setParameter("main_custno", main_custno);
+//		}
 		
 		
 		List<Basm060Class> content;
@@ -140,10 +143,10 @@ public class Basm060Service {
 		return content;
 	}
 	
-	public String whereStringBuilder(Object par) {
+	public String whereStringBuilder(Object par , LinkedList<String> include) {
 		String s = par.toString();
-		String[] includes = {"cust_no","cust_name","cust_tel"};
-		List<String> include = Arrays.asList(includes);
+//		String[] includes = {"cust_no","cust_name","cust_tel"};
+//		List<String> include = Arrays.asList(includes);
 		StringBuilder sb = new StringBuilder();
 		//		System.out.println();
 		for(String param : s.replaceFirst(".*?\\((.*)\\)", "$1").split(", ")) {
@@ -167,12 +170,18 @@ public class Basm060Service {
 					sb.append(" and "+ key +" like '"+value.substring(0,value.length()-1)+"%'");
 				}else if(value.matches("^\\*.*\\*$")) {
 					sb.append(" and "+ key +" like '%"+value.substring(1,value.length()-1)+"%'");
+				}else if(value.contains("?")) {
+					sb.append(" and "+ key +" like '"+value.replace("?", "_")+"'");
+				}else if(value.contains("|")&&value.matches("^[^|].*[^|]$")&&!value.contains("||")) {
+					sb.append(" and "+ key +" in ('"+value.replace("|", "','")+"')");
+				}else {
+					sb.append(" and "+key+" = "+value);
 				}
-				
+			}else {
+				sb.append(" and "+key+" = "+value);
 			}
-			//System.out.println(key);
 		}
-		return "";
+		return sb.toString();
 	}
 	
 }

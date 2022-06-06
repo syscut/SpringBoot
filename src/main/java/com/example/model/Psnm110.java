@@ -1,8 +1,12 @@
 package com.example.model;
 
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+
+import com.example.converter.StringConverter;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,6 +21,7 @@ public class Psnm110 {
 	@Column(name = "emp_no")
 	private Integer empNo;
 	
+	@Convert(converter = StringConverter.class)
 	@Column(name = "emp_name")
 	private String empName;
 	
