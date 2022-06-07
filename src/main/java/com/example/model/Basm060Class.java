@@ -11,59 +11,22 @@ import com.example.converter.StringConverter;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 @Entity
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class Basm060Class {
 	
 		@Id
 		private String cust_no;
 		
 		@Convert(converter = StringConverter.class)
-		private String cust_name;
+		private String cust_name,inv_addr,remk,create_id,update_id;
 		
-		private String cust_tel;
+		private String cust_tel,cust_fax,zip_code,zip_area,resp_man,
+					   call_man,call_tel,unify_no,pcs_no,public_code,
+					   file_code,tx_code,main_custno,old_custno;
 		
-		private String cust_fax;
+		private Date create_date,update_date;
 		
-		@Convert(converter = StringConverter.class)
-		private String inv_addr;
-		
-		private String zip_code;
-		
-		private String zip_area;
-		
-		private String resp_man;
-		
-		private String call_man;
-		
-		private String call_tel;
-		
-		private String unify_no;
-		
-		private String pcs_no;
-		
-		private String public_code;
-		
-		private String file_code;
-		
-		private String tx_code;
-		
-		private String main_custno;
-		
-		@Convert(converter = StringConverter.class)
-		private String remk;
-		
-		private String old_custno;
-		
-		@Convert(converter = StringConverter.class)
-		private String create_id;
-		
-		private Date create_date;
-		
-		@Convert(converter = StringConverter.class)
-		private String update_id;
-		
-		private Date update_date;
 	}

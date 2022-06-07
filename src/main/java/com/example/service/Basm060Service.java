@@ -2,9 +2,9 @@ package com.example.service;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
@@ -47,7 +47,7 @@ public class Basm060Service {
 		basm060.setUpdate_date(LocalDate.now().format(formatter));
 		basm060.setCreate_date(LocalDate.now().format(formatter));
 		Integer id = repository.findMax();
-		basm060.setCust_no(id+1);
+		basm060.setCust_no(id+1);//DB 不是auto increment 只能自己找 max
 		repository.save(basm060);
 		result.put("status", true);
 		result.put("message", "");
@@ -65,67 +65,14 @@ public class Basm060Service {
 
 	@SuppressWarnings("unchecked")
 	public List<Basm060Class> search(Basm060Class basm060Class){
-//		String param = "";
-//		Integer cust_no = null;
-//		Integer main_custno = null;
-//		whereStringBuilder(basm060Class, null);
-//		System.out.println(basm060Class.toString());
-//		for (String val : basm060Class.toString().replaceAll("Basm060Class\\((.*)\\)", "$1").replaceAll(" ", "").split(",")) {
-//			String[] col = val.split("=");
-//			if(col.length==2 && !col[1].matches("null")) {
-//				//System.out.println("col[0]:"+col[0]+"col[1]:"+col[1]);
-//				if(col[0].matches("cust_no")) {
-//					
-//					if(col[1].matches("^[<>=]\\d+")) {
-//						param += " and cust_no "+col[1].substring(0,1)+" :cust_no";
-//						cust_no = Integer.valueOf(col[1].substring(1));
-//					}else if(col[1].matches("^(<=|>=)\\d+")){
-//						param += " and cust_no "+col[1].substring(0,2)+" :cust_no";
-//						cust_no = Integer.valueOf(col[1].substring(2));
-//					}else{
-//						param += " and cust_no = :cust_no";
-//						cust_no = Integer.valueOf(col[1]);
-//					}
-//				}else if(col[0].matches("main_custno")) {
-//					
-//					if(col[1].matches("^[<>=]\\d+")) {
-//						param += " and main_custno "+col[1].substring(0,1)+" :main_custno";
-//						main_custno = Integer.valueOf(col[1].substring(1));
-//					}else if(col[1].matches("^(<=|>=)\\d+")){
-//						param += " and main_custno "+col[1].substring(0,2)+" :main_custno";
-//						main_custno = Integer.valueOf(col[1].substring(2));
-//					}else{
-//						param += " and main_custno = :main_custno";
-//						main_custno = Integer.valueOf(col[1]);
-//					}
-//				}else if(col[0].matches("zip_code||zip_area")) {
-//					param += " and b."+ col[0] +" = '"+col[1]+"'";
-//				}else if(col[0].matches("create_id||update_id")) {
-//					param += " and a."+ col[0] +" = '"+col[1]+"'";
-//				}else if(col[0].matches("create_date||update_date")){
-//					param += " and a."+ col[0] +" = '"+LocalDate.parse(col[1],stringFormatter).format(formatter)+"'";
-//				} else {
-//					param += " and "+ col[0] +" = '"+col[1]+"'";
-//				}
-//			}
-//		}
-		//System.out.println(param);
-		LinkedList<String> include = new LinkedList<String>();
+		List<String> include = new LinkedList<String>(Arrays.asList("*"));
 		include.add("cust_no");
 		Query query = em.createNativeQuery("select a.*, b.zip_area "
-                						  +"from basm060 a,basm020 b "
-                						  +"where (a.zip_code = b.zip_code or a.zip_code = '')"
-                						  +whereStringBuilder(basm060Class,include ),Basm060Class.class);
-		
-//		if(cust_no!=null) {
-//			//System.out.println("cust_no:"+cust_no);
-//			query.setParameter("cust_no", cust_no);
-//		}
-//		if(main_custno!=null) {
-//			//System.out.println("main_custno:"+main_custno);
-//			query.setParameter("main_custno", main_custno);
-//		}
-		
+                						  +"from basm060 a left join basm020 b "
+                						  +"on b.zip_code = a.zip_code "
+                						  +"where 1 = 1 "
+                						  +andSqlBuilder(basm060Class,include)
+                						  +" order by cust_no",Basm060Class.class);
 		
 		List<Basm060Class> content;
 			content = query.setMaxResults(300).getResultList();
@@ -143,25 +90,27 @@ public class Basm060Service {
 		return content;
 	}
 	
-	public String whereStringBuilder(Object par , LinkedList<String> include) {
+	public String andSqlBuilder(Object par , List<String> include) {
 		String s = par.toString();
 //		String[] includes = {"cust_no","cust_name","cust_tel"};
 //		List<String> include = Arrays.asList(includes);
 		StringBuilder sb = new StringBuilder();
-		//		System.out.println();
+		if(include==null) {
+			include = new LinkedList<String>(Arrays.asList(""));
+		}
 		for(String param : s.replaceFirst(".*?\\((.*)\\)", "$1").split(", ")) {
 			String key = param.split("=",2)[0];
 			String value= param.split("=",2)[1];
 //			System.out.println("key "+key+" value "+value);
-			if(include.contains(key)) {
+			if(include.contains(key)||include.contains("*")) {
 				if(value.matches("^(<|>)(?!=).*")) {
 					sb.append(" and "+ key +" "+ value.substring(0,1) +" '"+ value.substring(1) +"'");
 				}else if(value.matches("^(<=|>=).*")) {
 					sb.append(" and "+ key +" "+ value.substring(0,2) +" '"+ value.substring(2)+ "'");
 				}else if(value.startsWith("=")) {
-					sb.append(" and ( "+ key +" = null or "+ key +" = ' ')");
+					sb.append(" and ("+ key +" is null or "+ key +" = ' ')");
 				}else if(value.startsWith("!=")) {
-					sb.append(" and ( "+ key +" != null or "+ key +" != ' ')");
+					sb.append(" and ("+ key +" is not null or "+ key +" != ' ')");
 				}else if(value.matches(".*?:.*")) {
 					sb.append(" and "+ key +" between '"+value.split(":")[0]+"' and '"+value.split(":")[1]+"'");
 				}else if(value.matches("^\\*.*[^\\*]$")) {
@@ -174,13 +123,14 @@ public class Basm060Service {
 					sb.append(" and "+ key +" like '"+value.replace("?", "_")+"'");
 				}else if(value.contains("|")&&value.matches("^[^|].*[^|]$")&&!value.contains("||")) {
 					sb.append(" and "+ key +" in ('"+value.replace("|", "','")+"')");
-				}else {
+				}else if(!value.isBlank()&&!value.matches("null")){
 					sb.append(" and "+key+" = "+value);
 				}
-			}else {
-				sb.append(" and "+key+" = "+value);
+			}else if(!value.isBlank()&&!value.matches("null")){
+				sb.append(" and "+key+" = '"+value+"'");
 			}
 		}
+		
 		return sb.toString();
 	}
 	
