@@ -14,6 +14,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,9 +30,10 @@ public class Basm060Service {
 	
 	@Autowired
 	private EntityManager em;
-	
 	@Autowired
 	Basm060Repository repository;
+	@Autowired
+	Environment env;
 	
 	public Map<String, Object> update(Basm060 basm060) {
 		Map<String, Object> result = new HashMap<String,Object>();
@@ -68,7 +70,7 @@ public class Basm060Service {
 		List<String> include = new LinkedList<String>(Arrays.asList("*"));
 		include.add("cust_no");
 		Query query = em.createNativeQuery("select a.*, b.zip_area "
-                						  +"from basm060 a left join basm020 b "
+                						  +"from basm060 a left join "+env.getProperty("local.dbName")+"basm020 b "
                 						  +"on b.zip_code = a.zip_code "
                 						  +"where 1 = 1 "
                 						  +andSqlBuilder(basm060Class,include)
@@ -86,14 +88,11 @@ public class Basm060Service {
 //} catch (SQLException e) {
 //	e.printStackTrace();
 //}
-			
 		return content;
 	}
 	
 	public String andSqlBuilder(Object par , List<String> include) {
 		String s = par.toString();
-//		String[] includes = {"cust_no","cust_name","cust_tel"};
-//		List<String> include = Arrays.asList(includes);
 		StringBuilder sb = new StringBuilder();
 		if(include==null) {
 			include = new LinkedList<String>(Arrays.asList(""));
@@ -101,7 +100,6 @@ public class Basm060Service {
 		for(String param : s.replaceFirst(".*?\\((.*)\\)", "$1").split(", ")) {
 			String key = param.split("=",2)[0];
 			String value= param.split("=",2)[1];
-//			System.out.println("key "+key+" value "+value);
 			if(include.contains(key)||include.contains("*")) {
 				if(value.matches("^(<|>)(?!=).*")) {
 					sb.append(" and "+ key +" "+ value.substring(0,1) +" '"+ value.substring(1) +"'");

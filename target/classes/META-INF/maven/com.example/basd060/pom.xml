@@ -54,6 +54,11 @@
 			<artifactId>MS950-GFC</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
+		<dependency>
+			<groupId>com.gfc</groupId>
+			<artifactId>GFC-Libary</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
 	</dependencies>
 	<repositories>
 		<repository>

@@ -61,4 +61,6 @@
     <factorypathentry kind="VARJAR" id="M2_REPO/jakarta/activation/jakarta.activation-api/1.2.2/jakarta.activation-api-1.2.2.jar" enabled="true" runInBatchMode="false"/>
     <factorypathentry kind="VARJAR" id="M2_REPO/org/springframework/spring-core/5.3.18/spring-core-5.3.18.jar" enabled="true" runInBatchMode="false"/>
     <factorypathentry kind="VARJAR" id="M2_REPO/org/springframework/spring-jcl/5.3.18/spring-jcl-5.3.18.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/com/gfc/MS950-GFC/0.0.1-SNAPSHOT/MS950-GFC-0.0.1-SNAPSHOT.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/com/gfc/GFC-Libary/0.0.1-SNAPSHOT/GFC-Libary-0.0.1-SNAPSHOT.jar" enabled="true" runInBatchMode="false"/>
 </factorypath>
