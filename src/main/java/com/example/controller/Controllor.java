@@ -1,15 +1,15 @@
 package com.example.controller;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.persistence.Tuple;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -26,6 +26,7 @@ import com.example.service.Invm010Service;
 import com.example.service.LoginService;
 import com.example.service.Mafm080Service;
 import com.example.service.SystemPrgService;
+
 import com.example.service.Basm020Service;
 
 @CrossOrigin("*")
@@ -80,8 +81,8 @@ public class Controllor {
 	}
 	
 	@PostMapping(path = "/search")
-	public  List<Basm060Class> r(@RequestBody Basm060Class basm060Class) throws Exception{
-		return basm060Service.search(basm060Class);
+	public Map<String, List<Object[]>> r(@RequestBody String[] sqlStrings){
+		return basm060Service.search(sqlStrings);
 	}
 	
 	@PostMapping(path = "/invm010")
@@ -100,20 +101,26 @@ public class Controllor {
 	}
 	
 	@PostMapping(path = "/update")
-	public Map<String, Object> u(@RequestBody Basm060 basm060){
-		Map<String, Object> result = basm060Service.update(basm060);
+	public Map<String, Integer> u(@RequestBody String[] sqlStrings){
+		Map<String, Integer> result = basm060Service.update(sqlStrings);
 		return result;
 	}
 	
 	@PostMapping(path = "/create")
-	public Map<String, Object> c(@RequestBody Basm060 basm060){
-		Map<String, Object> result = basm060Service.create(basm060);
+	public Map<String, Integer> c(@RequestBody String[] sqlStrings){
+		Map<String, Integer> result = basm060Service.create(sqlStrings);
 		return result;
 	}
 	
 	@PostMapping(path = "/delete")
 	public Map<String, Object> d(@RequestBody Basm060 basm060){
 		Map<String, Object> result = basm060Service.delete(basm060);
+		return result;
+	}
+	
+	@PostMapping(path = "/exec")
+	public Map<String, Integer> e(@RequestBody String[] sqlStrings){
+		Map<String, Integer> result = basm060Service.exec(sqlStrings);
 		return result;
 	}
 }
