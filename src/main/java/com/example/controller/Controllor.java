@@ -6,8 +6,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.persistence.Tuple;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,7 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.model.Basm020;
 import com.example.model.Basm060;
-import com.example.model.Basm060Class;
 import com.example.model.Invm010;
 import com.example.model.Mafm080;
 import com.example.model.Prgm010;
@@ -119,8 +116,8 @@ public class Controllor {
 	}
 	
 	@PostMapping(path = "/exec")
-	public Map<String, Integer> e(@RequestBody String[] sqlStrings){
-		Map<String, Integer> result = basm060Service.exec(sqlStrings);
+	public Map<String, Object> e(@RequestBody String[] sqlStrings){
+		Map<String, Object> result = basm060Service.exec(sqlStrings);
 		return result;
 	}
 }

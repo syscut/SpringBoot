@@ -8,6 +8,11 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import javax.persistence.EntityManager;
+import javax.persistence.LockModeType;
+import javax.persistence.ParameterMode;
+import javax.persistence.StoredProcedureQuery;
+
+import org.hibernate.annotations.QueryHints;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
@@ -29,19 +34,23 @@ public class Basm060Service {
 	private Basm060Repository repository;
 	@Autowired
 	private Environment env;
+	
 	MS950StringConverter m = new MS950StringConverter();
 	
-	public Map<String, Integer> exec(String[] sqlStrings) {
-		Map<String, Integer> result = new LinkedHashMap<>();
+	public Map<String, Object> exec(String[] sqlStrings) {
+		Map<String, Object> result = new LinkedHashMap<>();
 		
-		try {
-			int successNumber = em.createNativeQuery(sqlStrings[0]).executeUpdate();
-				result.put("result0", successNumber);
-		} catch (Exception e) {
-			System.out.print(e);
-		}
+		StoredProcedureQuery storedProcedure = em.createStoredProcedureQuery("prgp010a_sp");
+		storedProcedure.registerStoredProcedureParameter("p_cr_datetime", String.class, ParameterMode.IN);
+		storedProcedure.registerStoredProcedureParameter("p_prg_no", String.class, ParameterMode.IN);
+		storedProcedure.registerStoredProcedureParameter("p_emp_no", String.class, ParameterMode.IN);
+		storedProcedure.setParameter("p_cr_datetime", sqlStrings[0]);
+		storedProcedure.setParameter("p_prg_no", sqlStrings[1]);
+		storedProcedure.setParameter("p_emp_no", sqlStrings[2]);
+		boolean status = storedProcedure.execute();
+		result.put("result0",status);
 		
-
+		
 		return result;
 	}
 	

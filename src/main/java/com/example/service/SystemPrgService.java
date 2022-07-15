@@ -43,8 +43,6 @@ public class SystemPrgService {
 											+ "order by 1","Prgm010").setParameter("emp_no", usrInf.get("empNo"))
 											.setParameter("usr_group", usrInf.get("usrGroup")).getResultList();
 		result.put("programs", prgm010);
-		System.out.println("emp_no="+usrInf.get("empNo"));
-		System.out.println("usr_group="+usrInf.get("usrGroup"));
 		
 		return result;
 	}
