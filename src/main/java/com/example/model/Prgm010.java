@@ -21,7 +21,16 @@ import lombok.NoArgsConstructor;
 						@ColumnResult(name = "prg_no"),
 						@ColumnResult(name = "prg_name"),
 						@ColumnResult(name = "remark"),
-						@ColumnResult(name = "exec_file")
+						@ColumnResult(name = "exec_file"),
+						@ColumnResult(name = "allow_add"),
+						@ColumnResult(name = "allow_update"),
+						@ColumnResult(name = "allow_delete"),
+						@ColumnResult(name = "allow_query"),
+						@ColumnResult(name = "allow_exec"),
+						@ColumnResult(name = "allow_bn1"),
+						@ColumnResult(name = "allow_bn2"),
+						@ColumnResult(name = "allow_bn3"),
+						@ColumnResult(name = "allow_bn4")
 				}
 				)})
 public class Prgm010 {
@@ -34,5 +43,23 @@ public class Prgm010 {
 	private String remark;
 	
 	private String exec_file;
+	
+	private char allow_add;
+	
+	private char allow_update;
+	
+	private char allow_delete;
+	
+	private char allow_query;
+	
+	private char allow_exec;
+	
+	private char allow_bn1;
+	
+	private char allow_bn2;
+	
+	private char allow_bn3;
+	
+	private char allow_bn4;
 	
 }

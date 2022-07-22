@@ -34,7 +34,9 @@ public class SystemPrgService {
 											.setParameter("usr_group", usrInf.get("usrGroup")).getResultList();
 		result.put("menuItem", prgm040);
 		
-		List<Prgm010> prgm010 = em.createNativeQuery("select distinct a.prg_no, a.prg_name, a.remark, a.exec_file "
+		List<Prgm010> prgm010 = em.createNativeQuery("select distinct a.prg_no, a.prg_name, a.remark, a.exec_file, "
+											+ "b.allow_add, b.allow_update, b.allow_delete, b.allow_query, b.allow_exec, "
+											+ "b.allow_bn1, b.allow_bn2, b.allow_bn3, b.allow_bn4 "
 											+ "from prgm010 a,prgm020 b "
 											+ "where a.menu_prg = 'Y' and "
 											+ "a.prg_no = b.prg_no and "
@@ -50,7 +52,9 @@ public class SystemPrgService {
 	@SuppressWarnings("unchecked")
 	public List<Prgm010> getPrg(Map<String, String> usrInf){
 		
-		List<Prgm010> prgm010 = em.createNativeQuery("select distinct a.prg_no, a.prg_name, a.remark ,a.exec_file "
+		List<Prgm010> prgm010 = em.createNativeQuery("select distinct a.prg_no, a.prg_name, a.remark ,a.exec_file, "
+											+ "b.allow_add, b.allow_update, b.allow_delete, b.allow_query, b.allow_exec, "
+											+ "b.allow_bn1, b.allow_bn2, b.allow_bn3, b.allow_bn4 "
 											+ "from prgm010 a,prgm020 b "
 											+ "where b.prg_no[1,3] = :sys_no and "
 											+ "a.menu_prg = 'Y' and "
